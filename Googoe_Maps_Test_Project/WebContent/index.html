@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+
+<style type="text/css">
+#map {
+	height: 400px;
+	width: 100%
+}
+</style>
+</head>
+
+<body>
+
+	Home Page
+
+	<h1>My Google Map</h1>
+	<div id="map"></div>
+
+	<script>
+		function initMap() {
+			var options = {
+				zoom : 12,
+				center : {
+					lat : 6.9271,
+					lng : 79.8612
+				}
+			}
+			//new map
+			var map = new google.maps.Map(document.getElementById('map'),
+					options);
+
+			addMarker({
+				coords : {
+					lat : 6.919267,
+					lng : 79.849725
+				},
+				content : '<h3>Hi</h3>'
+			});
+
+			// add marker function
+			function addMarker(props) {
+				var marker = new google.maps.Marker({
+					position : props.coords,
+					map : map,
+				//icon : 'https://cdn2.iconfinder.com/data/icons/snipicons/500/map-marker-128.png'
+				});
+
+				// check for custom icon
+				if (props.iconImage) {
+					marker.setIcon(props.iconImage);
+				}
+
+				//check for content
+				if (props.content) {
+					var infowindow = new google.maps.InfoWindow({
+						content : props.content
+					});
+					marker.addListener('click', function() {
+						infowindow.open(map, marker);
+					});
+				}
+			}
+
+		}
+	</script>
+
+	<script
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBJZcSDgPn-wCSZ9ExsGQFs47GIyt7qooA&callback=initMap"
+		async defer></script>
+</body>
+
+</html>
