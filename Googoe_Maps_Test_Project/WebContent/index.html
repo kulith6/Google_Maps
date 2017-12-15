@@ -4,6 +4,8 @@
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
 
+<script src="jquery-3.2.1.js"></script>
+
 <style type="text/css">
 #map {
 	height: 400px;
@@ -19,6 +21,21 @@
 	<h1>My Google Map</h1>
 	<div id="map"></div>
 
+	<table>
+		<tr>
+			<td>lat:</td>
+			<td><input type="text" id="lat" /></td>
+		</tr>
+		<tr>
+			<td>lng:</td>
+			<td><input type="text" id="lng" /></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><button id="add">Add marker</button></td>
+		</tr>
+	</table>
+
 	<script>
 		function initMap() {
 			var options = {
@@ -29,8 +46,14 @@
 				}
 			}
 			//new map
-			var map = new google.maps.Map(document.getElementById('map'),
-					options);
+			var map = new google.maps.Map(document.getElementById('map'),options);
+			
+			// Listen for click on map
+			google.maps.event.addListener(map, 'click', function(event){
+
+				document.getElementById("lat").value = event.latLng.lat();
+				document.getElementById("lng").value = event.latLng.lng();
+			})
 
 			addMarker({
 				coords : {
@@ -65,8 +88,41 @@
 			}
 
 		}
+		
+		$(document).ready(function(){
+			$("#add").click(function(){
+				if( ($("#lat").val().length === 0) || ($("#lng").val().length === 0) ) {
+					alert("lat or lng empty");
+				}else{
+					var marker = {
+							lat: $("#lat").val(),
+							lng: $("#lng").val(),
+							desc: 'marker desc here'
+					}
+					console.log(marker);
+					$.ajax({
+				        url: "AjaxService",
+				        type: 'GET',
+				        dataType: 'html',
+				        data: {markerInfo: JSON.stringify(marker)},
+				        contentType: 'application/json',
+				 
+				        success: function (data) {
+							alert("success");
+				        },
+				        error:function(data,status,er) {
+				            alert("error: "+data+" status: "+status+" er:"+er);
+				        }
+				    });
+				}
+
+				
+
+		    });
+		});
 	</script>
 
+	
 	<script
 		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBJZcSDgPn-wCSZ9ExsGQFs47GIyt7qooA&callback=initMap"
 		async defer></script>
